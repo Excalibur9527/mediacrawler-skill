@@ -4,6 +4,7 @@ set -euo pipefail
 REPO_URL="https://github.com/NanmiCoder/MediaCrawler.git"
 PROJECT_DIR="${PROJECT_PATH:-$HOME/MediaCrawler}"
 PROJECT_DIR="${PROJECT_DIR/#\~/$HOME}"
+export UV_HTTP_TIMEOUT="${UV_HTTP_TIMEOUT:-120}"
 
 log() {
   echo "[MediaCrawler Skill] $*"
@@ -47,7 +48,10 @@ cd "$PROJECT_DIR"
 [ -f "main.py" ] || fail "未找到 main.py，项目结构异常。"
 
 log "[4/6] 使用 uv 同步依赖 ..."
-uv sync || fail "uv sync 执行失败。"
+if ! uv sync; then
+  log "首次 uv sync 失败，重试一次..."
+  uv sync || fail "uv sync 执行失败。"
+fi
 
 log "[5/6] 安装 Playwright Chromium ..."
 uv run playwright install chromium || fail "Playwright Chromium 安装失败。"
@@ -58,3 +62,5 @@ uv run main.py --help >/dev/null || fail "健康检查失败：无法执行 'uv 
 log "安装完成。"
 log "项目目录: $PROJECT_DIR"
 log "帮助命令: cd \"$PROJECT_DIR\" && uv run main.py --help"
+log "默认结果目录: $PROJECT_DIR/data"
+log "例如抖音 JSONL 结果通常位于: $PROJECT_DIR/data/douyin/jsonl"
