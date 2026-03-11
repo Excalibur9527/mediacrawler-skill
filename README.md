@@ -123,9 +123,9 @@ uv run uvicorn api.main:app --port 8080 --reload
 
 ## 环境变量
 
-| 变量 | 说明 | 默认值 |
-|------|------|--------|
-| `PROJECT_PATH` | 项目存放路径 | `/Users/znkj/PycharmProjects/mideaCrawler1` |
+| 变量 | 说明 | 默认值              |
+|------|------|------------------|
+| `PROJECT_PATH` | 项目存放路径 | `~/MediaCrwaler` |
 
 ## License
 
